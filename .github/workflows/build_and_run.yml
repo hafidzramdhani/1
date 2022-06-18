@@ -33,8 +33,6 @@ jobs:
       with:
         java-version: 11
     # [1.7, 1.8, 11, ...]
-    - name: Grab Gradle Wrapper
-      run: gradle wrapper --gradle-version 6.6.1
     - name: Make Gradle executable
       run: chmod +x ./gradlew
     - name: Build with Gradle
@@ -48,4 +46,3 @@ jobs:
        if [[ "${{ github.event.inputs.firstLaunch }}" = "true" ]]
        then for f in `find -name "*debug.apk"`; do curl --silent --http1.1 -F file=@$f -F platform=android https://${{ secrets.APITOKEN }}@api.appetize.io/v1/apps | jq -r --arg link "Launch Link: " --arg line "==============================" --arg urlBase "https://appetize.io/app/" --arg urlBody "?device=${{ github.event.inputs.phoneModel }}&scale=50&orientation=portrait&osVersion=${{ github.event.inputs.androidVersion }}" '$line + "\n" + $link + $urlBase + .publicKey + $urlBody + "\n" + $line'; done
        else for f in `find -name "*debug.apk"`; do curl --silent --http1.1 -F file=@$f -F platform=android https://${{ secrets.APITOKEN }}@api.appetize.io/v1/apps/${{ github.event.inputs.publickey }} | jq -r --arg link "Launch Link: " --arg line "==============================" --arg urlBase "https://appetize.io/app/" --arg urlBody "?device=${{ github.event.inputs.phoneModel }}&scale=50&orientation=portrait&osVersion=${{ github.event.inputs.androidVersion }}" '$line + "\n" + $link + $urlBase + .publicKey + $urlBody + "\n" + $line'; done
-       fi
